@@ -6,7 +6,7 @@ import Rank from "./components/rank/Rank";
 import FaceRecognition from "./components/faceRecognition/FaceRecognition";
 import Signup from "./components/signup/Signup";
 
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import Particles from "react-tsparticles";
 import { loadSlim } from "tsparticles-slim";
 import { particlesOptions } from "./utils/particleOptions";
@@ -17,28 +17,7 @@ function App() {
   const [imageURL, setImageURL] = useState("");
   const [box, setBox] = useState({});
 
-  const onInputChange = (event) => {
-    setInput(event.target.value);
-  };
-  const calculateFaceLocation = (data) => {
-    const clarifaiFace =
-      data.outputs[0].data.regions[0].region_info.bounding_box;
-    const image = document.getElementById("inputImage");
-    const width = Number(image.width);
-    const height = Number(image.height);
-    return {
-      leftcol: clarifaiFace.left_col * width,
-      topRow: clarifaiFace.top_row * height,
-      rightcol: width - clarifaiFace.right_col * width,
-      bottomRow: height - clarifaiFace.bottom_row * height,
-    };
-  };
-  const displayBox = (box) => {
-    console.log(box);
-    setBox(box);
-  };
-  const onButtonSubmit = () => {
-    setImageURL(input);
+  useEffect(() => {
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     // In this section, we set the user authentication, user and app ID, model details, and the URL
     // of the image we want as an input. Change these strings to run your own example.
@@ -100,7 +79,34 @@ function App() {
         displayBox(calculateFaceLocation(JSON.parse(result)));
       })
       .catch((error) => console.log("error", error));
+  }, [imageURL]);
+
+  const onInputChange = (event) => {
+    setInput(event.target.value);
   };
+
+  const calculateFaceLocation = (data) => {
+    const clarifaiFace =
+      data.outputs[0].data.regions[0].region_info.bounding_box;
+    const image = document.getElementById("inputImage");
+    const width = Number(image.width);
+    const height = Number(image.height);
+    return {
+      leftcol: clarifaiFace.left_col * width,
+      topRow: clarifaiFace.top_row * height,
+      rightcol: width - clarifaiFace.right_col * width,
+      bottomRow: height - clarifaiFace.bottom_row * height,
+    };
+  };
+  const displayBox = (box) => {
+    console.log(box);
+    setBox(box);
+  };
+  const onButtonSubmit = () => {
+    setImageURL(input);
+    return;
+  };
+
   const particlesInit = useCallback(async (engine) => {
     console.log(engine);
     await loadSlim(engine);
@@ -109,6 +115,7 @@ function App() {
   const particlesLoaded = useCallback(async (container) => {
     await console.log(container);
   }, []);
+
   return (
     <div className="App">
       <Particles

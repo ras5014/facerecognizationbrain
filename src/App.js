@@ -17,8 +17,10 @@ function App() {
   const [imageURL, setImageURL] = useState("");
   const [box, setBox] = useState({});
 
+
   const handleApiCall = async () => {
     ///////////////////////////////////////////////////////////////////////////////////////////////////
+
     // In this section, we set the user authentication, user and app ID, model details, and the URL
     // of the image we want as an input. Change these strings to run your own example.
     //////////////////////////////////////////////////////////////////////////////////////////////////

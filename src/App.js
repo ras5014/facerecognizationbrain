@@ -17,12 +17,11 @@ function App() {
   const [imageURL, setImageURL] = useState("");
   const [box, setBox] = useState({});
 
-  useEffect(() => {
+  const handleApiCall = async () => {
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     // In this section, we set the user authentication, user and app ID, model details, and the URL
     // of the image we want as an input. Change these strings to run your own example.
     //////////////////////////////////////////////////////////////////////////////////////////////////
-
     // Your PAT (Personal Access Token) can be found in the portal under Authentification
     const PAT = "4c13f231a89343ebb72cf01298f8a152";
     // Specify the correct user_id/app_id pairings
@@ -33,10 +32,6 @@ function App() {
     const MODEL_ID = "face-detection";
     const MODEL_VERSION_ID = "6dc7e46bc9124c5c8824be4822abe105";
     const IMAGE_URL = imageURL;
-
-    ///////////////////////////////////////////////////////////////////////////////////
-    // YOU DO NOT NEED TO CHANGE ANYTHING BELOW THIS LINE TO RUN THIS EXAMPLE
-    ///////////////////////////////////////////////////////////////////////////////////
 
     const raw = JSON.stringify({
       user_app_id: {
@@ -63,23 +58,33 @@ function App() {
       body: raw,
     };
 
-    // NOTE: MODEL_VERSION_ID is optional, you can also call prediction with the MODEL_ID only
-    // https://api.clarifai.com/v2/models/{YOUR_MODEL_ID}/outputs
-    // this will default to the latest version_id
-    fetch(
-      "https://api.clarifai.com/v2/models/" +
-        MODEL_ID +
-        "/versions/" +
-        MODEL_VERSION_ID +
-        "/outputs",
-      requestOptions
-    )
-      .then((response) => response.text())
-      .then((result) => {
-        displayBox(calculateFaceLocation(JSON.parse(result)));
-      })
-      .catch((error) => console.log("error", error));
+    try {
+      fetch(
+        "https://api.clarifai.com/v2/models/" +
+          MODEL_ID +
+          "/versions/" +
+          MODEL_VERSION_ID +
+          "/outputs",
+        requestOptions
+      )
+        .then((response) => response.text())
+        .then((result) => {
+          displayBox(calculateFaceLocation(JSON.parse(result)));
+        })
+        .catch((error) => console.log("error", error));
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    handleApiCall();
   }, [imageURL]);
+
+  const onButtonSubmit = () => {
+    setImageURL(input);
+    return;
+  };
 
   const onInputChange = (event) => {
     setInput(event.target.value);
@@ -101,10 +106,6 @@ function App() {
   const displayBox = (box) => {
     console.log(box);
     setBox(box);
-  };
-  const onButtonSubmit = () => {
-    setImageURL(input);
-    return;
   };
 
   const particlesInit = useCallback(async (engine) => {

@@ -18,6 +18,7 @@ function App() {
   const [imageURL, setImageURL] = useState("");
   const [box, setBox] = useState({});
   let [route, setRoute] = useState("signin");
+  let [isSignedin, setIsSignedin] = useState(false);
 
   const handleApiCall = async () => {
     ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -122,6 +123,11 @@ function App() {
   }, []);
 
   const onRouteChange = (route) => {
+    if (route === "signin") {
+      setIsSignedin(false);
+    } else if (route === "home") {
+      setIsSignedin(true);
+    }
     setRoute(route);
   };
 
@@ -134,7 +140,7 @@ function App() {
         loaded={particlesLoaded}
         options={particlesOptions}
       />
-      <Navigation onRouteChange={onRouteChange} />
+      <Navigation onRouteChange={onRouteChange} isSignedin={isSignedin} />
       {route === "home" ? (
         <div>
           <Logo />

@@ -19,6 +19,23 @@ function App() {
   const [box, setBox] = useState({});
   let [route, setRoute] = useState("signin");
   let [isSignedin, setIsSignedin] = useState(false);
+  let [user, setUser] = useState({
+    id: "",
+    name: "",
+    email: "",
+    entries: 0,
+    joined: "",
+  });
+
+  const loadUser = (data) => {
+    setUser({
+      id: data.id,
+      name: data.name,
+      email: data.email,
+      entries: data.entries,
+      joined: data.joined,
+    });
+  };
 
   const handleApiCall = async () => {
     ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -74,6 +91,15 @@ function App() {
         .then((response) => response.text())
         .then((result) => {
           displayBox(calculateFaceLocation(JSON.parse(result)));
+        })
+        .then(() => {
+          fetch("http://localhost:3001/image", {
+            method: "put",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              id: user.id,
+            }),
+          });
         })
         .catch((error) => console.log("error", error));
     } catch (err) {
@@ -144,7 +170,7 @@ function App() {
       {route === "home" ? (
         <div>
           <Logo />
-          <Rank />
+          <Rank name={user.name} entries={user.entries} />
           <ImageLinkForm
             onInputChange={onInputChange}
             onButtonSubmit={onButtonSubmit}
@@ -152,7 +178,7 @@ function App() {
           <FaceRecognition imageURL={imageURL} box={box} />
         </div>
       ) : route === "signin" ? (
-        <Signin onRouteChange={onRouteChange} />
+        <Signin loadUser={loadUser} onRouteChange={onRouteChange} />
       ) : (
         <Register onRouteChange={onRouteChange} />
       )}

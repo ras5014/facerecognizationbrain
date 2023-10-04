@@ -29,7 +29,8 @@ const Register = ({ onRouteChange }) => {
         }),
       });
       const data = await response.json();
-      if (data === "Successfully registered") onRouteChange("signin");
+      if (data === "Successfully Registered and Created login entry")
+        onRouteChange("signin");
     } catch (e) {
       console.log(e.message);
     }

@@ -80,28 +80,30 @@ function App() {
     };
 
     try {
-      fetch(
+      const response1 = await fetch(
         "https://api.clarifai.com/v2/models/" +
           MODEL_ID +
           "/versions/" +
           MODEL_VERSION_ID +
           "/outputs",
         requestOptions
-      )
-        .then((response) => response.text())
-        .then((result) => {
-          displayBox(calculateFaceLocation(JSON.parse(result)));
-        })
-        .then(() => {
-          fetch("http://localhost:3001/image", {
-            method: "put",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              id: user.id,
-            }),
-          });
-        })
-        .catch((error) => console.log("error", error));
+      );
+      const result = await response1.text();
+      displayBox(calculateFaceLocation(JSON.parse(result)));
+
+      const response2 = await fetch("http://localhost:3001/image", {
+        method: "put",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: user.id,
+        }),
+      });
+      const countData = await response2.json();
+      const count = countData.entries;
+      setUser((prevUser) => ({
+        ...prevUser,
+        entries: count,
+      }));
     } catch (err) {
       console.log(err);
     }

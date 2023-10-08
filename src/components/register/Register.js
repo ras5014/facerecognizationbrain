@@ -19,15 +19,18 @@ const Register = ({ onRouteChange }) => {
 
   const onButtonSubmit = async () => {
     try {
-      const response = await fetch("http://localhost:3001/register", {
-        method: "post",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: name,
-          email: email,
-          password: password,
-        }),
-      });
+      const response = await fetch(
+        "https://facerecognition-api.vercel.app/register",
+        {
+          method: "post",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: name,
+            email: email,
+            password: password,
+          }),
+        }
+      );
       const data = await response.json();
       if (data === "Successfully Registered and Created login entry")
         onRouteChange("signin");

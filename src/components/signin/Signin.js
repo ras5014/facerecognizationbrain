@@ -14,14 +14,17 @@ const Signin = ({ onRouteChange, loadUser }) => {
 
   const onButtonSubmit = async () => {
     try {
-      const response = await fetch("http://localhost:3001/signin", {
-        method: "post",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: email,
-          password: password,
-        }),
-      });
+      const response = await fetch(
+        "https://facerecognition-api.vercel.app/signin",
+        {
+          method: "post",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: email,
+            password: password,
+          }),
+        }
+      );
       const data = await response.json();
       if (data.id) {
         onRouteChange("home");

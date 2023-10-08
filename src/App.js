@@ -91,13 +91,16 @@ function App() {
       const result = await response1.text();
       displayBox(calculateFaceLocation(JSON.parse(result)));
 
-      const response2 = await fetch("http://localhost:3001/image", {
-        method: "put",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id: user.id,
-        }),
-      });
+      const response2 = await fetch(
+        "https://facerecognition-api.vercel.app/image",
+        {
+          method: "put",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: user.id,
+          }),
+        }
+      );
       const countData = await response2.json();
       const count = countData.entries;
       setUser((prevUser) => ({
@@ -110,7 +113,7 @@ function App() {
   };
 
   useEffect(() => {
-    if (imageURL.length == 0) return;
+    if (imageURL.length === 0) return;
     handleApiCall();
   }, [imageURL]);
 
